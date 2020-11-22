@@ -97,6 +97,11 @@ class User implements UserInterface
      */
     private $profil;
 
+    /**
+     * @ORM\Column(type="blob")
+     */
+    private $avatar;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -243,6 +248,18 @@ class User implements UserInterface
     public function setProfil(?Profil $profil): self
     {
         $this->profil = $profil;
+
+        return $this;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
