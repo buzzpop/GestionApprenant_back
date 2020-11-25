@@ -9,6 +9,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,23 +20,70 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(
  * fields={"email"},
- * message="L'email doit être unique"
+ * message="la valeur existe déjà"
  * )
  *
  * @ApiResource(
  *      routePrefix="/admin",
  *      attributes={
  * "security"="is_granted('ROLE_Administrateur')",
- * "security_message"="Ressource accessible que par l'Admin"
+ * "security_message"="Ressource accessible que par l'Admin",
+ * "normalization_context"={"groups"={"get_profil_by_id"}}
  * },
  *      collectionOperations={
  *     "get_users"={
  *      "method"="GET",
  *     "path"="/users",
  *     },
- *      "post"={"path"="/users"},
+ *      "put_user"={
+ *      "method"="PUT",
+ *     "path"="/users/{id}",
+ *     "route_name"="put_user",
+ *      "deserialize"=false,
+ *             "swagger_context"={
+ *                 "consumes"={
+ *                     "multipart/form-data",
+ *                 },
+ *                 "parameters"={
+ *                     {
+ *                         "in"="formData",
+ *                         "name"="file",
+ *                         "type"="file",
+ *                         "description"="The file to upload",
+ *                     },
+ *                 },
+ *             },
+ *
  *
  *     },
+ *    "add_user"={
+ * "method"="POST",
+ * "path"="/api/admin/users" ,
+ * "route_name"="add_user",
+ *      "deserialize"=false,
+ *             "swagger_context"={
+ *                 "consumes"={
+ *                     "multipart/form-data",
+ *                 },
+ *                 "parameters"={
+ *                     {
+ *                         "in"="formData",
+ *                         "name"="file",
+ *                         "type"="file",
+ *                         "description"="The file to upload",
+ *                     },
+ *                 },
+ *             },
+ *          },
+ *
+ *     },
+ *     itemOperations={
+ *      "post_user"={
+ *      "method"="GET",
+ *     "path"="/users/{id}",
+ *     },
+ *
+ *     }
  * )
  * @ApiFilter(BooleanFilter::class, properties={"statut"})
  */
@@ -51,28 +99,33 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="email obligatoire")
+     * @Groups ({"get_profil_by_id"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
+     * @Groups ({"get_profil_by_id"})
      */
     private $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     *  @Assert\NotBlank(message="le mot de passe est obligatoire obligatoire")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"get_profil_by_id"})
+     *
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"get_profil_by_id"})
+     *
      */
     private $lastname;
 
@@ -83,22 +136,31 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"get_profil_by_id"})
+     *
      */
     private $address;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=255)
+     * @Groups ({"get_profil_by_id"})
+     *
      */
     private $tel;
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups ({"get_profil_by_id"})
+     * @Assert\NotNull
+     *
      */
     private $profil;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="blob", nullable=true)
+     * @Groups ({"get_profil_by_id"})
+     *
      */
     private $avatar;
 
@@ -254,7 +316,7 @@ class User implements UserInterface
 
     public function getAvatar()
     {
-        return $this->avatar;
+        return stream_get_contents($this->avatar) ;
     }
 
     public function setAvatar($avatar): self

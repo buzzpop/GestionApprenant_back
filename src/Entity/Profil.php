@@ -21,21 +21,27 @@ use Symfony\Component\Validator\Constraints as Assert;
  * message="Le libelle doit etre unique"
  * )
  * @ApiResource(
- *     normalizationContext={"groups"={"read"}},
  *     routePrefix="/admin",
  *      subresourceOperations={
  *          "get_users_by_profil"={
- *              "method"="GET",
- *              "path"="/profils/{id}/users",
+ *          "method"="GET",
+ *          "path"="/profils/{id}/users",
  *          },
  *      },
  *     attributes={
  * "security"="is_granted('ROLE_Administrateur')",
- * "security_message"="Ressource accessible que par l'Admin"
+ * "security_message"="Ressource accessible que par l'Admin",
  * },
  *     collectionOperations={
- *     "get"={"path"="/profils"},
- *      "post"={"path"="/profils"},
+ *     "get_profils"={
+ *      "method"="get",
+ *     "path"="/profils",
+ *      "normalization_context"={"groups"={"get_profils"}}
+ *     },
+ *      "post_profil"={"path"="/profils",
+ *      "method"="post",
+ *        "denormalization_context"={"groups"={"user:write"}},
+ *      },
  *     },
  *      itemOperations={
  *     "get"={"path"="/profils/{id}"},
@@ -52,13 +58,14 @@ class Profil
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"user:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="libelle obligatoire")
-     * @Groups ({"read"})
+     * @Groups ({"get_profils","get_profil_by_id"})
      */
     private $libelle;
 
