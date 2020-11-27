@@ -64,13 +64,14 @@ class UserService
         $this->manager->persist($userObject);
         $this->manager->flush();
         fclose($avatar);
-        return new JsonResponse("l'Utilisateur a été ajouté avec succés",Response::HTTP_CREATED);
+       return true;
 
     }
 
     public function putUser(Request $request, int $id){
         $dataUser= $request->request->all();
         $avatar= $request->files->get("avatar");
+
         if ($avatar){
             $avatar= fopen($avatar->getRealPath(),'rb');
         }
@@ -83,18 +84,16 @@ class UserService
             isset($dataUser['lastname'])? $typeUser->setLastname($dataUser['lastname']) : true;
             isset($dataUser['address'])? $typeUser->setAddress($dataUser['address']) : true;
             isset($dataUser['tel'])? $typeUser->setTel($dataUser['tel']) : true;
-            isset($dataUser['avatar']) ? $typeUser->setAvatar($avatar) : true;
-
+           $typeUser->setAvatar($avatar);
             $this->manager->persist($typeUser);
             $this->manager->flush();
-            return new JsonResponse("l'Utilisateur a été ajouté avec succés",Response::HTTP_CREATED);
+            if ($avatar){
+                fclose($avatar);
+            }
+
         }
 
-        if ($avatar){
-            fclose($avatar);
-        }
-
-        return new JsonResponse("Error",Response::HTTP_BAD_REQUEST);
+        return true;
     }
 
 }

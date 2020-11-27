@@ -74,13 +74,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                     },
  *                 },
  *             },
- *          },
+ *          }
  *
  *     },
  *     itemOperations={
  *      "post_user"={
  *      "method"="GET",
  *     "path"="/users/{id}",
+ *     },
+ *      "archive_user"={
+ *      "method"="PUT",
+ *     "path"="/users/archivage/{id}",
  *     },
  *
  *     }
@@ -152,7 +156,6 @@ class User implements UserInterface
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
      * @Groups ({"get_profil_by_id"})
-     * @Assert\NotNull
      *
      */
     private $profil;

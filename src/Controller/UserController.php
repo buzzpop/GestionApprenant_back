@@ -31,7 +31,10 @@ class UserController extends AbstractController
      */
     public function addUser(Request $request)
     {
-        $this->userService->addUser($request);
+        if (  $this->userService->addUser($request)){
+            return $this->json("Utilisateur Ajouté",200);
+        }
+        return $this->json(" Error",400);
 
     }
 
@@ -50,7 +53,11 @@ class UserController extends AbstractController
 
     public function putUser(Request $request, int $id)
     {
-        $this->userService->putUser($request, $id);
+       if ($this->userService->putUser($request, $id)) {
 
+           return $this->json("Utilisateur modifié",200);
+       }
+
+        return $this->json(" Error",400);
     }
 }
