@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(
  * fields={"email"},
- * message="la valeur existe déjà"
+ * message="l'email existe déjà"
  * )
  *
  * @ApiResource(
@@ -78,7 +78,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  *     },
  *     itemOperations={
- *      "post_user"={
+ *      "get_user"={
  *      "method"="GET",
  *     "path"="/users/{id}",
  *     },
@@ -116,12 +116,14 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="mot de passe obligatoire")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups ({"get_profil_by_id"})
+     * @Assert\NotBlank(message="renseigner votre prénom")
      *
      */
     private $firstname;
@@ -129,6 +131,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups ({"get_profil_by_id"})
+     * @Assert\NotBlank(message="renseigner votre nom")
      *
      */
     private $lastname;
@@ -141,6 +144,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups ({"get_profil_by_id"})
+     * @Assert\NotBlank(message="renseigner votre adresse")
      *
      */
     private $address;
@@ -148,6 +152,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups ({"get_profil_by_id"})
+     * @Assert\NotBlank(message="renseigner votre numero de téléphone")
      *
      */
     private $tel;
