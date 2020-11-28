@@ -18,14 +18,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  *
  * @ApiResource (
+ *     routePrefix="/admin",
  *     collectionOperations={
+ *      "get",
  *     "post_competence"={
  *     "method"="POST",
  *     "path"="/api/admin/competences",
  *      "route_name"="post_competence",
  *     },
+ *
  *     },
- *     itemOperations={}
  *
  * )
  */
@@ -41,6 +43,7 @@ class Competences
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le nom de la competence")
+     * @group ({"competence:read"})
      */
     private $libelle;
 
@@ -50,7 +53,7 @@ class Competences
     private $isArchived=false;
 
     /**
-     * @ORM\ManyToMany(targetEntity=GroupeCompetences::class, inversedBy="competences")
+     * @ORM\ManyToMany(targetEntity=GroupeCompetences::class, inversedBy="competences",cascade={"persist"})
      */
     private $groupeCompetence;
 

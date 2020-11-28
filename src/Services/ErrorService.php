@@ -18,11 +18,11 @@ class ErrorService
         $this->serializer=$serializer;
     }
     public function error($tabError){
-        $errors= $this->validator->validate($tabError);
+        $errors= $this->validator->validate( $tabError);
         if (count($errors)>0){
 
             foreach ($errors as $error){
-                $tabE[]=$error->getMessage();
+                $tabE['erreur: ']=$error->getMessage();
             }
             $tabE= $this->serializer->encode($tabE,'json');
 

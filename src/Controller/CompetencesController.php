@@ -26,6 +26,12 @@ class CompetencesController extends AbstractController
      */
 
     public function post_competence(CompetenceService $competenceService,Request $request){
-      $competenceService->postCompetence($request);
+      if( $competenceService->postCompetence($request)){
+          return $this->json("Success",200);
+      }
+        if( !$competenceService->postCompetence($request)){
+            return $this->json("Ajouter 3 niveaux pour la competence",400);
+        }
+        return $this->json("Error",400);
     }
 }
