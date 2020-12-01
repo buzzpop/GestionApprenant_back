@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CompetencesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,18 +19,44 @@ use Symfony\Component\Validator\Constraints as Assert;
  * fields={"libelle"},
  * message="La competence existe deja"
  * )
+ * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
  *
  * @ApiResource (
+ *     attributes={
+ *     "normalization_context"={"groups"={"compt:read"}},
+ *     },
  *     routePrefix="/admin",
  *     collectionOperations={
- *      "get",
+ *       "get"={
+ *      "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
  *     "post_competence"={
  *     "method"="POST",
  *     "path"="/api/admin/competences",
  *      "route_name"="post_competence",
+ *      "access_control"="(is_granted('ROLE_Administrateur'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
  *     },
  *
  *     },
+ *     itemOperations={
+ *          "get"={
+ *      "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
+ *          "put_competence"={
+ *            "method"="PUT",
+ *     "path"="/api/admin/competences/{id}",
+ *      "route_name"="put_competence",
+ *      "access_control"="(is_granted('ROLE_Administrateur'))",
+ *       "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
+ *     "delete"={
+ *      "access_control"="(is_granted('ROLE_Administrateur'))",
+ *       "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     }
+ *     }
  *
  * )
  */
@@ -37,13 +66,14 @@ class Competences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"addC:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le nom de la competence")
-     * @group ({"competence:read"})
+     * @Groups ({"compt:read","grpandC:read","comp_in_g:read",})
      */
     private $libelle;
 
@@ -58,8 +88,9 @@ class Competences
     private $groupeCompetence;
 
     /**
-     * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competences")
+     * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competences",cascade={"persist"})
      * @Assert\NotBlank(message="Ajouter les niveaux de competences")
+     * @Groups ({"compt:read"})
      */
     private $niveaux;
 

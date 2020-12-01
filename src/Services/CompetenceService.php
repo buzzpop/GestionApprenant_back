@@ -64,4 +64,34 @@ class CompetenceService
                 return $competenceObj;
     }
 
+    public function putCompetence( $request ,int $id){
+        $compTab= $this->serializer->decode($request->getContent(),'json');
+
+        $compRepo= $this->manager->getRepository(Competences::class);
+        $comp= $compRepo ->find($id);
+        //dd($compTab['libelle']);
+
+        if (isset($compTab['libelle'])){
+            $comp->setLibelle($compTab['libelle']);
+        }
+
+        if ($compTab['niveaux']){
+            foreach ($compTab['niveaux'] as $niveau){
+
+                $niveauRepo= $this->manager->getRepository(Niveau::class)->find($niveau['id']);
+                if ($niveauRepo){
+                    $niveauRepo->setLibelle($niveau['libelle']);
+                    $niveauRepo->setCritereEvaluation($niveau['critere_evaluation']);
+                    $niveauRepo->setGroupeAction($niveau['groupe_action']);
+                    $this->manager->persist($niveauRepo);
+                }
+            }
+        }
+
+        $this->manager->persist($comp);
+      $this->manager->flush();
+        return true;
+
+    }
+
 }

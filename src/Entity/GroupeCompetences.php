@@ -2,18 +2,46 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\GroupeCompetencesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=GroupeCompetencesRepository::class)
+ * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
  * @UniqueEntity(
  * fields={"libelle"},
  * message="Le Groupe de competence existe deja"
+ * )
+ * @ApiResource(
+ *      normalizationContext={"groups"={"grpandC:read"}},
+ *     denormalizationContext={"groups"={"addC:write"}},
+ *     routePrefix="/admin",
+ *          collectionOperations={
+ *          "get",
+ *          "competences_in_groupe"={
+ *          "method"="GET",
+ *          "path"="/groupe_competences/competences",
+ *     "normalization_context"={"groups"={"comp_in_g:read"}},
+ *     },
+ *     "post",
+ *     },
+ *     itemOperations={
+ *     "get",
+ *    "put_Groupe"={
+ *     "method"="PUT",
+ *     "path"="/grpcomp/{id}",
+ *
+ *     }
+ * }
  * )
  */
 class GroupeCompetences
@@ -28,11 +56,14 @@ class GroupeCompetences
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank(message="Ajouter le nom du groupe de competence")
+     * @Groups ({"grpandC:read","addC:write"})
      */
     private $libelle;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Ajouter le descriptif du groupe de competence")
+     * @Groups ({"grpandC:read","addC:write"})
      */
     private $descriptif;
 
@@ -43,6 +74,12 @@ class GroupeCompetences
 
     /**
      * @ORM\ManyToMany(targetEntity=Competences::class, mappedBy="groupeCompetence")
+     * @Assert\Count(
+     *     min="1",
+     *     minMessage="ajouter une competence au minimum dans le groupe de competence"
+     * )
+     * @Groups ({"grpandC:read","comp_in_g:read","addC:write"})
+     * @ApiSubresource()
      */
     private $competences;
 

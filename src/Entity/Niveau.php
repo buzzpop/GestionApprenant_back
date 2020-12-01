@@ -5,14 +5,12 @@ namespace App\Entity;
 use App\Repository\NiveauRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=NiveauRepository::class)
- * @UniqueEntity(
- * fields={"libelle"},
- * message="Le niveau existe deja"
- * )
+ *
  */
 class Niveau
 {
@@ -26,18 +24,21 @@ class Niveau
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le libelle niveau")
+     * @Groups ({"compt:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Veuillez saisir les criteres d'evaluation")
+     * @Groups ({"compt:read"})
      */
     private $critere_evaluation;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le groupe d'action")
+     * @Groups ({"compt:read"})
      */
     private $groupe_action;
 
@@ -45,6 +46,11 @@ class Niveau
      * @ORM\ManyToOne(targetEntity=Competences::class, inversedBy="niveaux")
      */
     private $competences;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived=false;
 
     public function getId(): ?int
     {
@@ -95,6 +101,18 @@ class Niveau
     public function setCompetences(?Competences $competences): self
     {
         $this->competences = $competences;
+
+        return $this;
+    }
+
+    public function getIsArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
