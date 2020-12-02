@@ -24,6 +24,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource (
  *     attributes={
  *     "normalization_context"={"groups"={"compt:read"}},
+ *     "denormalization_context"={"groups"={"ajoutC:write"}},
  *     },
  *     routePrefix="/admin",
  *     collectionOperations={
@@ -33,8 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     "post_competence"={
  *     "method"="POST",
- *     "path"="/api/admin/competences",
- *      "route_name"="post_competence",
+ *     "path"="/competences",
  *      "access_control"="(is_granted('ROLE_Administrateur'))",
  *      "access_control_message"="Vous n'avez pas access à cette Ressource"
  *     },
@@ -73,9 +73,16 @@ class Competences
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le nom de la competence")
-     * @Groups ({"compt:read","grpandC:read","comp_in_g:read",})
+     * @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write"})
      */
     private $libelle;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     *  @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write"})
+     * @Assert\NotBlank(message="Ajouter le descriptif de la competence")
+     */
+    private $descriptif;
 
     /**
      * @ORM\Column(type="boolean")
@@ -84,13 +91,25 @@ class Competences
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeCompetences::class, inversedBy="competences",cascade={"persist"})
+     * @Assert\NotBlank(message="Affecter la competence à un groupe")
+     * @Assert\Count (
+     *     min="1",
+     *     minMessage="Ajouter au minimum un groupe de competence à la competence",
+     * )
+     * @Groups ({"ajoutC:write"})
      */
     private $groupeCompetence;
 
     /**
      * @ORM\OneToMany(targetEntity=Niveau::class, mappedBy="competences",cascade={"persist"})
      * @Assert\NotBlank(message="Ajouter les niveaux de competences")
-     * @Groups ({"compt:read"})
+     * @Groups ({"compt:read","ajoutC:write"})
+     * @Assert\Count (
+     *     min="3",
+     *     max="3",
+     *     minMessage="Ajouter 3 Niveaux",
+     *     maxMessage="Ajouter 3 Niveaux"
+     * )
      */
     private $niveaux;
 
@@ -179,6 +198,18 @@ class Competences
                 $niveau->setCompetences(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescriptif(): ?string
+    {
+        return $this->descriptif;
+    }
+
+    public function setDescriptif(string $descriptif): self
+    {
+        $this->descriptif = $descriptif;
 
         return $this;
     }

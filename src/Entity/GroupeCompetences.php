@@ -22,25 +22,42 @@ use Symfony\Component\Validator\Constraints as Assert;
  * message="Le Groupe de competence existe deja"
  * )
  * @ApiResource(
+ *
  *      normalizationContext={"groups"={"grpandC:read"}},
  *     denormalizationContext={"groups"={"addC:write"}},
  *     routePrefix="/admin",
  *          collectionOperations={
- *          "get",
+ *          "get"={
+ *       "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
  *          "competences_in_groupe"={
  *          "method"="GET",
  *          "path"="/groupe_competences/competences",
+ *       "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource",
  *     "normalization_context"={"groups"={"comp_in_g:read"}},
  *     },
- *     "post",
+ *     "post"={
+ *       "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
  *     },
  *     itemOperations={
- *     "get",
+ *     "get"={
+ *       "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
  *    "put_Groupe"={
  *     "method"="PUT",
+ *       "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource",
  *     "path"="/grpcomp/{id}",
- *
- *     }
+ *     },
+ *     "delete"={
+ *       "access_control"="(is_granted('ROLE_Administrateur') or is_granted('ROLE_Formateur') or is_granted('ROLE_Cm'))",
+ *      "access_control_message"="Vous n'avez pas access à cette Ressource"
+ *     },
  * }
  * )
  */
@@ -50,6 +67,7 @@ class GroupeCompetences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"ajoutC:write"})
      */
     private $id;
 
@@ -73,7 +91,7 @@ class GroupeCompetences
     private $isArchived=false;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Competences::class, mappedBy="groupeCompetence")
+     * @ORM\ManyToMany(targetEntity=Competences::class, mappedBy="groupeCompetence", cascade={"persist"})
      * @Assert\Count(
      *     min="1",
      *     minMessage="ajouter une competence au minimum dans le groupe de competence"

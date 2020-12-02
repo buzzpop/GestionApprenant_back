@@ -30,45 +30,14 @@ class CompetenceService
         $this->repository=$groupeCompetencesRepository;
     }
 
-    public function  postCompetence(Request $request){
-        $request=$request->getContent();
-
-        $requestTab= $this->serializer->decode($request,'json');
-
-        $competenceObj=$this->serializer->denormalize($requestTab,Competences::class,true);
-
-        if (isset($requestTab['niveau'])){
-
-            if(count($requestTab['niveau'])<3)  {
-              return false;
-            }
-            else{
-
-                foreach ($requestTab['niveau'] as $niveau){
-                    $niveauObj= $this->serializer->denormalize($niveau,Niveau::class,true);
-
-                    $this->error->error($niveauObj);
-                    $this->manager->persist($niveauObj);
-                    $competenceObj->addNiveau($niveauObj);
-                    // dd($competenceObj);
-                }
-               $grpc= $this->repository->find($requestTab['idCompetence']);
-               $competenceObj->addGroupeCompetence($grpc);
-
-                $this->manager->persist($competenceObj);
-                $this->manager->flush();
-                return true;
-            }
-
-        }
-                return $competenceObj;
-    }
 
     public function putCompetence( $request ,int $id){
+
         $compTab= $this->serializer->decode($request->getContent(),'json');
 
         $compRepo= $this->manager->getRepository(Competences::class);
         $comp= $compRepo ->find($id);
+
         //dd($compTab['libelle']);
 
         if (isset($compTab['libelle'])){

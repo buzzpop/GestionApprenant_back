@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\NiveauRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,21 +23,21 @@ class Niveau
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le libelle niveau")
-     * @Groups ({"compt:read"})
+     * @Groups ({"compt:read","ajoutC:write"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Veuillez saisir les criteres d'evaluation")
-     * @Groups ({"compt:read"})
+     * @Groups ({"compt:read","ajoutC:write"})
      */
     private $critere_evaluation;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le groupe d'action")
-     * @Groups ({"compt:read"})
+     * @Groups ({"compt:read","ajoutC:write"})
      */
     private $groupe_action;
 
