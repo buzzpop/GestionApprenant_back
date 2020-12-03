@@ -73,13 +73,13 @@ class Competences
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le nom de la competence")
-     * @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write"})
+     * @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write","cAndG:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="string", length=255)
-     *  @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write"})
+     *  @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write","cAndG:read"})
      * @Assert\NotBlank(message="Ajouter le descriptif de la competence")
      */
     private $descriptif;

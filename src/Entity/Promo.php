@@ -70,7 +70,12 @@ class Promo
     /**
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promos")
      */
-    private $referentiel;
+    private $referentiel=false;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isArchived;
 
     public function getId(): ?int
     {
@@ -205,6 +210,18 @@ class Promo
     public function setReferentiel(?Referentiel $referentiel): self
     {
         $this->referentiel = $referentiel;
+
+        return $this;
+    }
+
+    public function getIsArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(bool $isArchived): self
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
