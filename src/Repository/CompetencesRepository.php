@@ -47,4 +47,19 @@ class CompetencesRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getCompetencesByGroupIdByRefId(int $idr,int $idg)
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.groupeCompetence','g')
+            ->innerJoin('g.referentiels','r')
+            ->andWhere('g.id = :val')
+            ->setParameter('val', $idg)
+            ->andWhere('r.id = :va')
+            ->setParameter('va', $idr)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

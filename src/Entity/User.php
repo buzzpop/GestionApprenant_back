@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -53,8 +55,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                     },
  *                 },
  *             },
- *
- *
  *     },
  *    "add_user"={
  * "method"="POST",
@@ -86,10 +86,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "method"="PUT",
  *     "path"="/users/archivage/{id}",
  *     },
+ *     "delete",
  *
  *     }
  * )
- * @ApiFilter(BooleanFilter::class, properties={"statut"})
+ * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
  */
 class User implements UserInterface
 {
@@ -97,80 +98,91 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"groupe:write"})
      */
     protected $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank(message="email obligatoire")
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read","getApp:read"})
      */
-    private $email;
+    protected $email;
 
     /**
      * @ORM\Column(type="json")
      * @Groups ({"get_profil_by_id"})
      */
-    private $roles = [];
+    protected $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="mot de passe obligatoire")
      */
-    private $password;
+    protected $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read","getApp:read"})
      * @Assert\NotBlank(message="renseigner votre prénom")
      *
      */
-    private $firstname;
+    protected $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read","getApp:read"})
      * @Assert\NotBlank(message="renseigner votre nom")
      *
      */
-    private $lastname;
+    protected $lastname;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    private $statut=false;
+    protected $isArchived=false;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read","getApp:read"})
      * @Assert\NotBlank(message="renseigner votre adresse")
      *
      */
-    private $address;
+    protected $address;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read","getApp:read"})
      * @Assert\NotBlank(message="renseigner votre numero de téléphone")
      *
      */
-    private $tel;
+    protected $tel;
 
     /**
      * @ORM\ManyToOne(targetEntity=Profil::class, inversedBy="users")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read","getApp:read"})
      *
      */
-    private $profil;
+    protected $profil;
 
     /**
      * @ORM\Column(type="blob", nullable=true)
-     * @Groups ({"get_profil_by_id"})
+     * @Groups ({"get_profil_by_id","apprenant:read","getP_R_A_F:read"})
      *
      */
-    private $avatar;
+    protected $avatar;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Chat::class, mappedBy="users")
+     */
+    private $chats;
+
+    public function __construct()
+    {
+        $this->chats = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -274,14 +286,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getStatut(): ?bool
+    public function getIsArchived(): ?bool
     {
-        return $this->statut;
+        return $this->isArchived;
     }
 
-    public function setStatut(bool $statut): self
+    public function setIsArchived(bool $isArchived): self
     {
-        $this->statut = $statut;
+        $this->isArchived = $isArchived;
 
         return $this;
     }
@@ -324,12 +336,42 @@ class User implements UserInterface
 
     public function getAvatar()
     {
-        return stream_get_contents($this->avatar) ;
+        return (string) $this->avatar ;
     }
 
     public function setAvatar($avatar): self
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Chat[]
+     */
+    public function getChats(): Collection
+    {
+        return $this->chats;
+    }
+
+    public function addChat(Chat $chat): self
+    {
+        if (!$this->chats->contains($chat)) {
+            $this->chats[] = $chat;
+            $chat->setUsers($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChat(Chat $chat): self
+    {
+        if ($this->chats->removeElement($chat)) {
+            // set the owning side to null (unless already changed)
+            if ($chat->getUsers() === $this) {
+                $chat->setUsers(null);
+            }
+        }
 
         return $this;
     }

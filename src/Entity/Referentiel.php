@@ -35,8 +35,40 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     },
  *     "postRef"={
  *       "method"="post",
- *     "path"="/referentiels",
- *      "denormalization_context"={"groups"={"addGC:read"}},
+ *     "path"="api/admin/referentiels",
+ *      "route_name"="postRef",
+ *      "denormalization_context"={"groups"={"addGC:write"}},
+ *      "deserialize"=false,
+ *             "swagger_context"={
+ *                 "consumes"={
+ *                     "multipart/form-data",
+ *                 },
+ *                 "parameters"={
+ *                     {
+ *                         "in"="formData",
+ *                         "name"="file",
+ *                         "type"="file",
+ *                         "description"="The file to upload",
+ *                     },
+ *                 },
+ *            },
+ *          },
+ *      },
+ *     itemOperations={
+ *     "delete",
+ *     "get"={
+ *        "normalization_context"={"groups"={"GdeC:read"}},
+ *     },
+ *     "getCompByGroupByRef"={
+ *     "method"="get",
+ *     "path"="api/admin/referentiels/{idR}/grpecompetences/{idG}",
+ *     "route_name"="getCompByGroupByRef"
+ *     },
+ *
+ *      "putRef"={
+ *      "method"="PUT",
+ *     "path"="/referentiels/{id}",
+ *     "route_name"="putRef",
  *      "deserialize"=false,
  *             "swagger_context"={
  *                 "consumes"={
@@ -51,8 +83,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *                     },
  *                 },
  *             },
+ *          },
  *     }
- *      }
+ *
  * )
  */
 class Referentiel
@@ -67,7 +100,7 @@ class Referentiel
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Veuillez saisir le nom du referentiel")
-     * @Groups ({"ref:read","addGC:read"})
+     * @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
      *
      */
     private $libelle;
@@ -75,28 +108,28 @@ class Referentiel
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Veuillez renseigner la presentation")
-     * @Groups ({"ref:read","addGC:read"})
+     * @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
      */
     private $presentation;
 
     /**
      * @ORM\Column(type="blob")
      * @Assert\NotBlank(message="Veuillezrenseigner le programme")
-     * @Groups ({"ref:read","addGC:read"})
+     * @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
      */
     private $programme;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Veuillez saisir les criteres d'admission")
-     *  @Groups ({"ref:read","addGC:read"})
+     *  @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="text", length=255)
      * @Assert\NotBlank(message="Veuillez saisir les criteres d'evaluation")
-     *  @Groups ({"ref:read","addGC:read"})
+     *  @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
      */
     private $critereEvaluation;
 
@@ -107,10 +140,10 @@ class Referentiel
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeCompetences::class, inversedBy="referentiels")
-     * @Groups ({"cAndG:read","addGC:read"})
+     * @Groups ({"cAndG:read","addGC:write","GdeC:read"})
      * @Assert\Count (
      *     min="1",
-     *     minMessage="Ajouter au moins une critere devaluation"
+     *     minMessage="Ajouter au moins un groupe de competence"
      * )
      */
     private $groupeCompetences;
@@ -128,7 +161,7 @@ class Referentiel
 
     public function getId(): ?int
     {
-        return $this->id;
+        return  $this->id;
     }
 
     public function getLibelle(): ?string
@@ -157,7 +190,7 @@ class Referentiel
 
     public function getProgramme()
     {
-        return base64_encode( stream_get_contents($this->programme)) ;
+        return (string) $this->programme ;
     }
 
     public function setProgramme($programme): self

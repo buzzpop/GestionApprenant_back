@@ -67,21 +67,21 @@ class GroupeCompetences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"ajoutC:write","addGC:read"})
+     * @Groups ({"ajoutC:write","addGC:write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank(message="Ajouter le nom du groupe de competence")
-     * @Groups ({"grpandC:read","addC:write","cAndG:read"})
+     * @Groups ({"grpandC:read","addC:write","cAndG:read","GdeC:read"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Ajouter le descriptif du groupe de competence")
-     * @Groups ({"grpandC:read","addC:write","cAndG:read"})
+     * @Groups ({"grpandC:read","addC:write","cAndG:read","GdeC:read"})
      */
     private $descriptif;
 
