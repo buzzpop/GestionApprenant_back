@@ -30,6 +30,11 @@ class Apprenant extends User
      */
     private $groupes;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ProfilSortie::class, inversedBy="apprenant")
+     */
+    private $profilSortie;
+
     public function __construct()
     {
         $this->groupes = new ArrayCollection();
@@ -58,6 +63,18 @@ class Apprenant extends User
         if ($this->groupes->removeElement($groupe)) {
             $groupe->removeApprenant($this);
         }
+
+        return $this;
+    }
+
+    public function getProfilSortie(): ?ProfilSortie
+    {
+        return $this->profilSortie;
+    }
+
+    public function setProfilSortie(?ProfilSortie $profilSortie): self
+    {
+        $this->profilSortie = $profilSortie;
 
         return $this;
     }

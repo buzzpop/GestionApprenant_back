@@ -37,25 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "method"="GET",
  *     "path"="/users",
  *     },
- *      "put_user"={
- *      "method"="PUT",
- *     "path"="/users/{id}",
- *     "route_name"="put_user",
- *      "deserialize"=false,
- *             "swagger_context"={
- *                 "consumes"={
- *                     "multipart/form-data",
- *                 },
- *                 "parameters"={
- *                     {
- *                         "in"="formData",
- *                         "name"="file",
- *                         "type"="file",
- *                         "description"="The file to upload",
- *                     },
- *                 },
- *             },
- *     },
+ *
  *    "add_user"={
  * "method"="POST",
  * "path"="/api/admin/users" ,
@@ -82,11 +64,31 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "method"="GET",
  *     "path"="/users/{id}",
  *     },
- *      "archive_user"={
+ *
+ *      "put_user"={
  *      "method"="PUT",
- *     "path"="/users/archivage/{id}",
+ *     "path"="/users/{id}",
+ *     "route_name"="put_user",
+ *      "deserialize"=false,
+ *             "swagger_context"={
+ *                 "consumes"={
+ *                     "multipart/form-data",
+ *                 },
+ *                 "parameters"={
+ *                     {
+ *                         "in"="formData",
+ *                         "name"="file",
+ *                         "type"="file",
+ *                         "description"="The file to upload",
+ *                     },
+ *                 },
+ *             },
  *     },
- *     "delete",
+ *
+ *      "archive_user"={
+ *      "method"="DELETE",
+ *     "path"="/users/{id}",
+ *     },
  *
  *     }
  * )
@@ -98,7 +100,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"groupe:write"})
+     * @Groups ({"groupe:write","get_profil_by_id"})
      */
     protected $id;
 
@@ -119,6 +121,7 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="mot de passe obligatoire")
+     *   * @Groups ({"get_profil_by_id"})
      */
     protected $password;
 
@@ -181,6 +184,7 @@ class User implements UserInterface
 
     public function __construct()
     {
+
         $this->chats = new ArrayCollection();
     }
 
@@ -235,7 +239,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)  $this->password;
     }
 
     public function setPassword(string $password): self
@@ -334,10 +338,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getAvatar()
-    {
-        return (string) $this->avatar ;
-    }
+      public function getAvatar()
+        {
+            if ($this->avatar){
+                return base64_encode((stream_get_contents($this->avatar)));
+            }
+          return null;
+        }
+
 
     public function setAvatar($avatar): self
     {

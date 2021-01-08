@@ -58,14 +58,14 @@ class Profil
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"user:write"})
+     * @Groups ({"get_profils","user:write","get_profil_by_id"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="libelle obligatoire")
-     * @Groups ({"get_profils","get_profil_by_id"})
+     * @Groups ({"get_profils","get_profil_by_id","user:write"})
      */
     private $libelle;
 

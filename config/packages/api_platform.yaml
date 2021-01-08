@@ -12,4 +12,4 @@ api_platform:
         pagination:
             enabled: true
             page_parameter_name: _page
-            items_per_page: 4
+            items_per_page: 6

@@ -43,9 +43,13 @@ class UserService
     }
     public function addUser(Request $request){
         $dataUser= $request->request->all();
-        $avatar= $request->files->get("avatar");
-        $avatar= fopen($avatar->getRealPath(),'rb');
-        $typeUser=$this->profilRepo->find( $dataUser['profils']);
+
+            $avatar= $request->files->get("avatar");
+            $avatar= fopen($avatar->getRealPath(),'rb');
+
+       $typeUser=$this->profilRepo->find( (int)$dataUser['profil']);
+        unset($dataUser['profil']);
+
 
         $profil=$typeUser->getLibelle();
         $profil=="Administrateur" ? $profil="User" : $profil=$typeUser->getLibelle();
@@ -57,39 +61,40 @@ class UserService
         $userObject->setProfil($typeUser);
         $password = $userObject->getPassword();
         $userObject -> setPassword($this->encode -> encodePassword($userObject, $password));
-        $userObject-> setAvatar($avatar);
+
+
+            $userObject-> setAvatar($avatar);
+
 
             $this->error->error($userObject);
 
         $this->manager->persist($userObject);
         $this->manager->flush();
         fclose($avatar);
+
        return true;
 
     }
 
     public function putUser(Request $request, int $id){
         $dataUser= $request->request->all();
-        $avatar= $request->files->get("avatar");
 
-        if ($avatar){
+            $avatar= $request->files->get("avatar");
             $avatar= fopen($avatar->getRealPath(),'rb');
-        }
 
         $typeUser=$this->userRepo->find($id);
         if ($typeUser){
             isset($dataUser['email']) ? $typeUser->setEmail($dataUser['email']) : true;
-            isset($dataUser['password'])? $typeUser->setPassword($this->encoder->encodePassword($typeUser,$dataUser['password'])) : true;
+            $typeUser->setAvatar($typeUser->getAvatar());
             isset($dataUser['firstname'])? $typeUser->setFirstname($dataUser['firstname']) : true;
             isset($dataUser['lastname'])? $typeUser->setLastname($dataUser['lastname']) : true;
             isset($dataUser['address'])? $typeUser->setAddress($dataUser['address']) : true;
             isset($dataUser['tel'])? $typeUser->setTel($dataUser['tel']) : true;
-           $typeUser->setAvatar($avatar);
+                $typeUser->setAvatar($avatar);
+
             $this->manager->persist($typeUser);
             $this->manager->flush();
-            if ($avatar){
-                fclose($avatar);
-            }
+            fclose($avatar);
 
         }
 
