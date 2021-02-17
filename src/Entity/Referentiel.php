@@ -36,7 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  *     "getcompAndGroup"={
  *             "method"="GET",
- *     "path"="/referentiels/grpecompetences"
+ *     "path"="/referentiels/grpecompetences",
+ *        "normalization_context"={"groups"={"cAndG:read"}},
  *     },
  *     "postRef"={
  *       "method"="post",

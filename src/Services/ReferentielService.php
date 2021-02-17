@@ -72,7 +72,7 @@ class ReferentielService
             if (isset($dataRef['grpeCompetence'])) {
             foreach ($dataRef['grpeCompetence'] as $key=>$item){
                 $groupeCompetence= $this->manager->getRepository(GroupeCompetences::class)->find($item);
-                if ($key=="del"){
+                if ($key=="delete"){
 
                   $referentiel->removeGroupeCompetence($groupeCompetence);
                 }
