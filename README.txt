@@ -37,6 +37,15 @@ Postman, Identifiants de Test pour les routes:
 Admin: hayes.rubie@upton.com
 Password: password
 
+Formateur: mbeureukhdjile@gmail.com
+Password: password
+
+Apprenant: rasprod221@gmail.com
+Password: password
+
+Cm:cm@gmail.com
+Password: password
+
  
 ## Auteur
 Le projet a été réalisé par Rassoul Mbodj Apprenant à la Sonatel Academy
