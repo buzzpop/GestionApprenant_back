@@ -30,7 +30,13 @@ Ajouter, Lister, Modifier, Supprimer:
 7. Ensuite verifier votre phpmyadmin pour la base de donnée créée nommée api-platform.
 8. Ensuite telecharger le fichier base de donnée nommé <<api-platform.sql>> et l'importer au niveau de la base de 
  donnée que symfony vient de creer
-9. Et Enfin Executer la commande <<symfony serve>> pour démarrer le serveur Symfony.
+9. Et Enfin Executer la commande <<symfony serve>> pour démarrer le serveur et un lien vous sera generer  sur le console
+vous y cliquez dessus pour l'ouvrir dans le terminal
+
+Postman, Identifiants de Test pour les routes:
+Admin: hayes.rubie@upton.com
+Password: password
+
  
 ## Auteur
 Le projet a été réalisé par Rassoul Mbodj Apprenant à la Sonatel Academy
