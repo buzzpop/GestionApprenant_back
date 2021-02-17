@@ -32,7 +32,7 @@ Ajouter, Lister, Modifier, Supprimer:
  donnée que symfony vient de creer
 9. Et Enfin Executer la commande <<symfony serve>> pour démarrer le serveur Symfony.
  
- Auteur
+## Auteur
 Le projet a été réalisé par Rassoul Mbodj Apprenant à la Sonatel Academy
 Phone Number: +221 77 091 21 22
 Email: rasprod221@gmail.com
