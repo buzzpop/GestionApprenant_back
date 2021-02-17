@@ -2,8 +2,6 @@
 
 
 namespace App\Services;
-
-
 use App\Entity\Apprenant;
 use App\Entity\Chat;
 use App\Entity\Promo;

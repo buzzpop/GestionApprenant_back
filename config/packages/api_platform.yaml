@@ -9,7 +9,7 @@ api_platform:
     swagger:
         versions: [3]
     collection:
-        pagination:
-            enabled: true
-            page_parameter_name: _page
-            items_per_page: 6
+#        pagination:
+#            enabled: true
+#            page_parameter_name: _page
+#            items_per_page: 7

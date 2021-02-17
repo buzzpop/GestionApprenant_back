@@ -66,23 +66,16 @@ class Competences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"addC:write"})
+     * @Groups ({"compt:read","addC:write","grpandC:read","competences"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Ajouter le nom de la competence")
-     * @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write","cAndG:read"})
+     * @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write","cAndG:read","competences"})
      */
     private $libelle;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     *  @Groups ({"compt:read","grpandC:read","comp_in_g:read","ajoutC:write","addC:write","cAndG:read"})
-     * @Assert\NotBlank(message="Ajouter le descriptif de la competence")
-     */
-    private $descriptif;
 
     /**
      * @ORM\Column(type="boolean")
@@ -202,15 +195,4 @@ class Competences
         return $this;
     }
 
-    public function getDescriptif(): ?string
-    {
-        return $this->descriptif;
-    }
-
-    public function setDescriptif(string $descriptif): self
-    {
-        $this->descriptif = $descriptif;
-
-        return $this;
-    }
 }

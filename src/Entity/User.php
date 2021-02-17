@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entity;
-
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -268,7 +267,7 @@ class User implements UserInterface
 
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return  ucfirst( $this->firstname);
     }
 
     public function setFirstname(string $firstname): self
@@ -280,7 +279,7 @@ class User implements UserInterface
 
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return ucfirst($this->lastname);
     }
 
     public function setLastname(string $lastname): self

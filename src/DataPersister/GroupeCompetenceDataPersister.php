@@ -45,6 +45,10 @@ class GroupeCompetenceDataPersister implements ContextAwareDataPersisterInterfac
             $data->removeCompetence($competence);
             $this->entityManager->persist($competence);
         }
+        foreach ($data->getReferentiels() as $ref){
+            $data->removeReferentiel($ref);
+            $this->entityManager->persist($ref);
+        }
 
         $this->entityManager->flush();
 

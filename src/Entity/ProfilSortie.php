@@ -39,10 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      "method"="GET",
  *     "path"="/profil_sorties/{id}",
  *     },
- *       "put_profilSortie"={
- *      "method"="PUT",
- *     "path"="/profil_sorties/{id}",
- *     },
+ *      "put",
  *
  *      "archive_profil_sortie"={
  *      "method"="DELETE",

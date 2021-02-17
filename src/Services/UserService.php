@@ -3,7 +3,6 @@
 
 namespace App\Services;
 
-
 use App\Entity\User;
 use App\Repository\ProfilRepository;
 use App\Repository\UserRepository;
@@ -44,8 +43,7 @@ class UserService
     public function addUser(Request $request){
         $dataUser= $request->request->all();
 
-            $avatar= $request->files->get("avatar");
-            $avatar= fopen($avatar->getRealPath(),'rb');
+
 
        $typeUser=$this->profilRepo->find( (int)$dataUser['profil']);
         unset($dataUser['profil']);
@@ -62,15 +60,22 @@ class UserService
         $password = $userObject->getPassword();
         $userObject -> setPassword($this->encode -> encodePassword($userObject, $password));
 
-
+        $avatar= $request->files->get("avatar");
+        if ($avatar){
+            $avatar= fopen($avatar->getRealPath(),'rb');
             $userObject-> setAvatar($avatar);
+        }
+
 
 
             $this->error->error($userObject);
 
         $this->manager->persist($userObject);
         $this->manager->flush();
-        fclose($avatar);
+        if ($avatar){
+            fclose($avatar);
+        }
+
 
        return true;
 
@@ -79,22 +84,29 @@ class UserService
     public function putUser(Request $request, int $id){
         $dataUser= $request->request->all();
 
-            $avatar= $request->files->get("avatar");
-            $avatar= fopen($avatar->getRealPath(),'rb');
+
 
         $typeUser=$this->userRepo->find($id);
         if ($typeUser){
             isset($dataUser['email']) ? $typeUser->setEmail($dataUser['email']) : true;
-            $typeUser->setAvatar($typeUser->getAvatar());
             isset($dataUser['firstname'])? $typeUser->setFirstname($dataUser['firstname']) : true;
             isset($dataUser['lastname'])? $typeUser->setLastname($dataUser['lastname']) : true;
             isset($dataUser['address'])? $typeUser->setAddress($dataUser['address']) : true;
             isset($dataUser['tel'])? $typeUser->setTel($dataUser['tel']) : true;
+
+            $avatar= $request->files->get("avatar");
+            if ($avatar){
+                $avatar= fopen($avatar->getRealPath(),'rb');
                 $typeUser->setAvatar($avatar);
+            }
+
 
             $this->manager->persist($typeUser);
             $this->manager->flush();
-            fclose($avatar);
+            if ($avatar){
+                fclose($avatar);
+            }
+
 
         }
 

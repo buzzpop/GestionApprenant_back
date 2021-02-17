@@ -17,6 +17,7 @@ class Niveau
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *@Groups ({"compt:read"})
      */
     private $id;
 

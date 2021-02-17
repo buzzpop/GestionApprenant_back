@@ -28,28 +28,28 @@ class ReferentielController extends AbstractController
 
     public function postReferentiel(ReferentielService $referentielService, Request $request){
 
-          $referentiel=  $referentielService->postReferentiel($request);
-            return $this->json($referentiel,Response::HTTP_CREATED);
+            $referentielService->postReferentiel($request);
+            return $this->json("success",Response::HTTP_CREATED);
     }
 
 
-    /**
-     * @Route(
-     * name="getCompByGroupByRef",
-     * path="api/admin/referentiels/{idR}/grpecompetences/{idG}",
-     * methods={"GET"},
-     * defaults={
-     * "_controller"="\app\Controller\Referentiel::getCompetencesByGroupIdByRefId",
-     * "_api_resource_class"=Referentiel::class,
-     * "_api_collection_operation_name"="getCompByGroupByRef"
-     * }
-     * )
-     */
-    public function getCompetencesByGroupIdByRefId(int $idR,int $idG,CompetencesRepository $repository)
-    {
-        $competences= $repository->getCompetencesByGroupIdByRefId($idR,$idG);
-        return $this->json($competences,Response::HTTP_OK);
-    }
+//   /**
+//   * @Route(
+//  * name="getComp",
+//  * path="api/admin/referentiels/{idR}/grpecompetences/{idG}",
+//    * methods={"GET"},
+//  * defaults={
+//   * "_controller"="\app\Controller\Referentiel::getCompetencesByGroupIdByRefId",
+//   * "_api_resource_class"=Referentiel::class,
+//    * "_api_collection_operation_name"="getComp"
+//   * }
+//   * )
+//    */
+//  public function getCompetencesByGroupIdByRefId(int $idR,int $idG,CompetencesRepository $repository)
+//  {
+//    $competences= $repository->getCompetencesByGroupIdByRefId($idR,$idG);
+//       return $this->json($competences,Response::HTTP_OK);
+//  }
 
     /**
      * @Route(

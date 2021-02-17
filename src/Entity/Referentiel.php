@@ -19,19 +19,24 @@ use Symfony\Component\Validator\Constraints as Assert;
  * fields={"libelle"},
  * message="Le nom du referentiel doit etre unique"
  * )
- *  * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
+ * @ApiFilter(BooleanFilter::class, properties={"isArchived"})
  *
  * @ApiResource (
- *     normalizationContext={"groups"={"ref:read"}},
  *     routePrefix="/admin",
  *     collectionOperations={
- *     "getRefandGroupedecompetence"={
- *          "method"="get",
+ *         "get"={
+ *             "normalization_context"={"groups"={"ref"}},
  *     },
+ *       "getComp"={
+ *     "method"="get",
+ *     "path"="api/admin/referentiels/{idR}/grpecompetences/{idG}",
+ *     "route_name"="getComp",
+ *      "normalization_context"={"groups"={"competences"}},
+ *     },
+ *
  *     "getcompAndGroup"={
- *             "method"="get",
- *     "path"="/referentiels/grpecompetences",
- *      "normalization_context"={"groups"={"cAndG:read"}},
+ *             "method"="GET",
+ *     "path"="/referentiels/grpecompetences"
  *     },
  *     "postRef"={
  *       "method"="post",
@@ -58,11 +63,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     "delete",
  *     "get"={
  *        "normalization_context"={"groups"={"GdeC:read"}},
- *     },
- *     "getCompByGroupByRef"={
- *     "method"="get",
- *     "path"="api/admin/referentiels/{idR}/grpecompetences/{idG}",
- *     "route_name"="getCompByGroupByRef"
  *     },
  *
  *      "putRef"={
@@ -94,13 +94,14 @@ class Referentiel
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"cAndG:read","ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Veuillez saisir le nom du referentiel")
-     * @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
+     * @Groups ({"addGC:write","getP_R_A_F:read","cAndG:read","ref"})
      *
      */
     private $libelle;
@@ -108,28 +109,28 @@ class Referentiel
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Veuillez renseigner la presentation")
-     * @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
+     * @Groups ({"addGC:write","getP_R_A_F:read","cAndG:read","ref"})
      */
     private $presentation;
 
     /**
      * @ORM\Column(type="blob")
      * @Assert\NotBlank(message="Veuillezrenseigner le programme")
-     * @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
+     * @Groups ({"addGC:write","getP_R_A_F:read","cAndG:read","ref"})
      */
     private $programme;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Veuillez saisir les criteres d'admission")
-     *  @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
+     *  @Groups ({"addGC:write","getP_R_A_F:read","cAndG:read","ref"})
      */
     private $critereAdmission;
 
     /**
      * @ORM\Column(type="text", length=255)
      * @Assert\NotBlank(message="Veuillez saisir les criteres d'evaluation")
-     *  @Groups ({"ref:read","addGC:write","getP_R_A_F:read"})
+     *  @Groups ({"addGC:write","getP_R_A_F:read","cAndG:read","ref"})
      */
     private $critereEvaluation;
 
@@ -140,7 +141,7 @@ class Referentiel
 
     /**
      * @ORM\ManyToMany(targetEntity=GroupeCompetences::class, inversedBy="referentiels")
-     * @Groups ({"cAndG:read","addGC:write","GdeC:read"})
+     * @Groups ({"cAndG:read","addGC:write","GdeC:read","ref","competences"})
      * @Assert\Count (
      *     min="1",
      *     minMessage="Ajouter au moins un groupe de competence"
@@ -190,7 +191,7 @@ class Referentiel
 
     public function getProgramme()
     {
-        return (string) $this->programme ;
+        return base64_encode(stream_get_contents($this->programme) ) ;
     }
 
     public function setProgramme($programme): self

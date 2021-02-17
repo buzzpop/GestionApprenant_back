@@ -64,7 +64,7 @@ class Chat
     private $pieceJointes;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="promo")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="chats")
      *  @Assert\NotBlank(message="ajouter le user")
      *  @Groups ({"chat:write"})
      */

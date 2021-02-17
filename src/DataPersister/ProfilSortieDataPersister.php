@@ -27,7 +27,8 @@ class ProfilSortieDataPersister implements ContextAwareDataPersisterInterface
 
     public function persist($data, array $context = [])
     {
-        // TODO: Implement persist() method.
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
 
     }
 

@@ -17,6 +17,9 @@ class moreInformationInToken
         $data = $event->getData();
 
         $data['archived'] = $user->getIsArchived();
+        $data['firstname'] = $user->getFirstname();
+        $data['lastname'] = $user->getLastname();
+        $data['avatar'] = $user->getAvatar();
 
         $event->setData($data);
     }

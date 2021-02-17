@@ -67,21 +67,21 @@ class GroupeCompetences
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups ({"ajoutC:write","addGC:write"})
+     * @Groups ({"ajoutC:write","addGC:write","grpandC:read","cAndG:read","ref"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      *  @Assert\NotBlank(message="Ajouter le nom du groupe de competence")
-     * @Groups ({"grpandC:read","addC:write","cAndG:read","GdeC:read"})
+     * @Groups ({"grpandC:read","addC:write","cAndG:read","GdeC:read","ref"})
      */
     private $libelle;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(message="Ajouter le descriptif du groupe de competence")
-     * @Groups ({"grpandC:read","addC:write","cAndG:read","GdeC:read"})
+     * @Groups ({"grpandC:read","addC:write","cAndG:read","GdeC:read","ref"})
      */
     private $descriptif;
 
@@ -96,7 +96,7 @@ class GroupeCompetences
      *     min="1",
      *     minMessage="ajouter une competence au minimum dans le groupe de competence"
      * )
-     * @Groups ({"grpandC:read","comp_in_g:read","addC:write","cAndG:read"})
+     * @Groups ({"grpandC:read","comp_in_g:read","addC:write","cAndG:read","competences"})
      * @ApiSubresource()
      */
     private $competences;

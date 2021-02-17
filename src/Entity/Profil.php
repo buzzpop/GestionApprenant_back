@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=ProfilRepository::class)
  * @UniqueEntity(
  * fields={"libelle"},
- * message="Le libelle doit etre unique"
+ * message="Le libelle ajouté existe déja"
  * )
  * @ApiResource(
  *     routePrefix="/admin",

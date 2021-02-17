@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PromoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PromoRepository::class)
+ * @ApiResource()
  */
 class Promo
 {
@@ -84,7 +86,7 @@ class Promo
      * @ORM\ManyToOne(targetEntity=Referentiel::class, inversedBy="promos")
      *  @Groups ({"getP_R_A_F:read"})
      */
-    private $referentiel=false;
+    private $referentiel;
 
     /**
      * @ORM\Column(type="boolean")
